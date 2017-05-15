@@ -80,11 +80,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title" id="myModalLabel">
-                <select class="form-control">
-                    <option>Adalar</option>
-                    <option>Üsküdar</option>
-                    <option>Ataşehir</option>
-                    <option>Kadıköy</option>
+                <select id="slctIlce" name="slctIlce" class="form-control">
                 </select>
             </h4>
           </div>
@@ -96,9 +92,8 @@
                     </div>
                   </div>
                   <div class="col-md-4 modal-body-chart">
-                      <h3>Comment</h3>
-                      <p>Adalar is the 33th place in Istanbul in the competition index. In terms of sub-indices, it is above average in education and infrastructure areas. Demographic structure, social life, health, economic commercial life, financial markets, tourism and transportation are areas where Adalar has below average values. In terms of sub-indices, Adalar is the first place in Istanbul in the education index. But the main reason is that Adalar has the lowest population of Istanbul.</p>
-              
+                        <h3 id="baslik" style="font-size: 28px;"></h3>
+                        <p id="aciklama" style="font-size: 20px;"></p>
                   </div>
               </div>
               <div class="row">
@@ -113,100 +108,6 @@
       </div>
     </div>
     
-    
-    
-    <script>
-
-    var color = Chart.helpers.color;
-    var config = {
-        type: 'radar',
-        data: {
-            labels: ["Demografik Yapı", "Eğitim Altyapısı", "Sosyal Yaşam", "Sağlık", "Ekonomik Kapasite", "Ticari Hayat/Girişimcilik", "Finansal Yapı", "Turizm", "Altyapı", "Ulaşım"],
-            datasets: [ {
-                label: "Adalar",
-                backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
-                borderColor: window.chartColors.blue,
-                pointBackgroundColor: window.chartColors.blue,
-                data: [
-                    34.46,
-                    72.73,
-                    8.53,
-                    29.27,
-                    24.42,
-                    2.77,
-                    23.39,
-                    13.17,
-                    79.08,
-                    21.67
-
-                ]
-            },{
-                label: "Average",
-                backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
-                borderColor: window.chartColors.red,
-                pointBackgroundColor: window.chartColors.red,
-                data: [
-                    44.49,
-                    50.33,
-                    24.67,
-                    62.38,
-                    37.38,
-                    29.83,
-                    40.06,
-                    22.85,
-                    64.08,
-                    50.64
-
-                ]
-            },{
-                label: "Maximum",
-                backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
-                borderColor: window.chartColors.yellow,
-                pointBackgroundColor: window.chartColors.yellow,
-                data: [
-                    75.73,
-                    72.73,
-                    69.35,
-                    88.79,
-                    73.42,
-                    71.50,
-                    85.13,
-                    71.46,
-                    83.24,
-                    98.38
-
-                ]
-            }]
-        },
-        options: {
-            legend: {
-                position: 'bottom',
-            },
-            title: {
-                display: false,
-                text: ''
-            },
-            scale: {
-                xAxes: [{
-                    display: false
-                  }],
-                  yAxes: [{
-                    display: false
-                  }],
-                ticks: {
-                  beginAtZero: true
-                }
-            },
-        }
-    };
-
-    window.onload = function() {
-        window.myRadar = new Chart(document.getElementById("canvas"), config);
-    };
-
-    
-    </script>
-    
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -215,6 +116,214 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+    
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                dataType: 'json',
+                url: 'http://localhost/mahallemistanbul/radarchart/api/',
+                success: function(json){
+                    for(var i=0; i<json.length; i++){
+                        $('#slctIlce').append('<option value="'+json[i].id+'">'+json[i].ilce+'</option>');
+                    }
+                    
+                    $.ajax({
+                        dataType: 'json',
+                        url: 'http://localhost/mahallemistanbul/radarchart/api/?id=' + json[0].id, //+ $('#slctIlce').val(),
+                        success: function(jsonvalue){
+                            var color = Chart.helpers.color;
+                            var config = {
+                                type: 'radar',
+                                data: {
+                                    labels: ["Rekabet", "Demografik Yapı", "Eğitim Altyapısı", "Sosyal Yaşam", "Sağlık", "Ekonomik Kapasite", "Ticari Hayat/Girişimcilik", "Finansal Yapı", "Turizm", "Altyapı", "Ulaşım"],
+                                    datasets: [ {
+                                        label: jsonvalue[0].ilce,
+                                        backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+                                        borderColor: window.chartColors.blue,
+                                        pointBackgroundColor: window.chartColors.blue,
+                                        data: [
+                                            jsonvalue[0].rekabet,
+                                            jsonvalue[0].demografikyapi,
+                                            jsonvalue[0].egitimaltyapisi,
+                                            jsonvalue[0].sosyalyasam,
+                                            jsonvalue[0].saglik,
+                                            jsonvalue[0].ekomonikkapasite,
+                                            jsonvalue[0].ticarihayatgirisimcilik,
+                                            jsonvalue[0].finansalyapi,
+                                            jsonvalue[0].turizm,
+                                            jsonvalue[0].altyapi,
+                                            jsonvalue[0].ulasim
+
+                                        ]
+                                    },{
+                                        label: "Average",
+                                        backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+                                        borderColor: window.chartColors.red,
+                                        pointBackgroundColor: window.chartColors.red,
+                                        data: [
+                                            40.99,
+                                            44.49,
+                                            50.33,
+                                            24.67,
+                                            62.38,
+                                            37.38,
+                                            29.83,
+                                            40.06,
+                                            22.85,
+                                            64.08,
+                                            50.64
+
+                                        ]
+                                    },{
+                                        label: "Maximum",
+                                        backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
+                                        borderColor: window.chartColors.yellow,
+                                        pointBackgroundColor: window.chartColors.yellow,
+                                        data: [
+                                            65.63,
+                                            75.73,
+                                            72.73,
+                                            69.35,
+                                            88.79,
+                                            73.42,
+                                            71.50,
+                                            85.13,
+                                            71.46,
+                                            83.24,
+                                            98.38
+
+                                        ]
+                                    }]
+                                },
+                                options: {
+                                    legend: {
+                                        position: 'bottom',
+                                    },
+                                    title: {
+                                        display: false,
+                                        text: ''
+                                    },
+                                    scale: {
+                                        xAxes: [{
+                                            display: false
+                                          }],
+                                          yAxes: [{
+                                            display: false
+                                          }],
+                                        ticks: {
+                                          beginAtZero: true
+                                        }
+                                    },
+                                }
+                            };
+                            window.myRadar = new Chart(document.getElementById("canvas"), config);
+                            $('#baslik').html(jsonvalue[0].ilce + ' at a Glance');
+                            $('#aciklama').html(jsonvalue[0].aciklama)
+                        }
+                    });
+                }
+            });
+        });
+        
+        $('#slctIlce').on('change', function(){
+            $.ajax({
+                dataType: 'json',
+                url: 'http://localhost/mahallemistanbul/radarchart/api/?id=' + $('#slctIlce').val(),
+                success: function(json){
+                    var color = Chart.helpers.color;
+                    var config = {
+                        type: 'radar',
+                        data: {
+                            labels: ["Rekabet", "Demografik Yapı", "Eğitim Altyapısı", "Sosyal Yaşam", "Sağlık", "Ekonomik Kapasite", "Ticari Hayat/Girişimcilik", "Finansal Yapı", "Turizm", "Altyapı", "Ulaşım"],
+                            datasets: [ {
+                                label: json[0].ilce,
+                                backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+                                borderColor: window.chartColors.blue,
+                                pointBackgroundColor: window.chartColors.blue,
+                                data: [
+                                    json[0].rekabet,
+                                    json[0].demografikyapi,
+                                    json[0].egitimaltyapisi,
+                                    json[0].sosyalyasam,
+                                    json[0].saglik,
+                                    json[0].ekomonikkapasite,
+                                    json[0].ticarihayatgirisimcilik,
+                                    json[0].finansalyapi,
+                                    json[0].turizm,
+                                    json[0].altyapi,
+                                    json[0].ulasim
+
+                                ]
+                            },{
+                                label: "Average",
+                                backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+                                borderColor: window.chartColors.red,
+                                pointBackgroundColor: window.chartColors.red,
+                                data: [
+                                    40.99,
+                                    44.49,
+                                    50.33,
+                                    24.67,
+                                    62.38,
+                                    37.38,
+                                    29.83,
+                                    40.06,
+                                    22.85,
+                                    64.08,
+                                    50.64
+
+                                ]
+                            },{
+                                label: "Maximum",
+                                backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
+                                borderColor: window.chartColors.yellow,
+                                pointBackgroundColor: window.chartColors.yellow,
+                                data: [
+                                    65.63,
+                                    75.73,
+                                    72.73,
+                                    69.35,
+                                    88.79,
+                                    73.42,
+                                    71.50,
+                                    85.13,
+                                    71.46,
+                                    83.24,
+                                    98.38
+
+                                ]
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: false,
+                                text: ''
+                            },
+                            scale: {
+                                xAxes: [{
+                                    display: false
+                                  }],
+                                  yAxes: [{
+                                    display: false
+                                  }],
+                                ticks: {
+                                  beginAtZero: true
+                                }
+                            },
+                        }
+                    };
+                    window.myRadar = new Chart(document.getElementById("canvas"), config);
+                    $('#baslik').html(json[0].ilce + ' at a Glance');
+                    $('#aciklama').html(json[0].aciklama)
+                }
+            });
+            
+        });
+        
+    </script>
 </body>
 
 </html>
