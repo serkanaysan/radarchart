@@ -147,7 +147,7 @@
                                             jsonvalue[0].egitimaltyapisi,
                                             jsonvalue[0].sosyalyasam,
                                             jsonvalue[0].saglik,
-                                            jsonvalue[0].ekomonikkapasite,
+                                            jsonvalue[0].ekonomikkapasite,
                                             jsonvalue[0].ticarihayatgirisimcilik,
                                             jsonvalue[0].finansalyapi,
                                             jsonvalue[0].turizm,
@@ -216,6 +216,7 @@
                                     },
                                 }
                             };
+                            
                             window.myRadar = new Chart(document.getElementById("canvas"), config);
                             $('#baslik').html(jsonvalue[0].ilce + ' at a Glance');
                             $('#aciklama').html(jsonvalue[0].aciklama)
@@ -246,7 +247,7 @@
                                     json[0].egitimaltyapisi,
                                     json[0].sosyalyasam,
                                     json[0].saglik,
-                                    json[0].ekomonikkapasite,
+                                    json[0].ekonomikkapasite,
                                     json[0].ticarihayatgirisimcilik,
                                     json[0].finansalyapi,
                                     json[0].turizm,
@@ -315,6 +316,7 @@
                             },
                         }
                     };
+                    window.myRadar.destroy();
                     window.myRadar = new Chart(document.getElementById("canvas"), config);
                     $('#baslik').html(json[0].ilce + ' at a Glance');
                     $('#aciklama').html(json[0].aciklama)
